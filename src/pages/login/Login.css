@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('../assets/sverige43.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('../../assets/sverige43.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -27,6 +27,7 @@
   box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
   color: white;
   animation: fadeIn 0.8s ease-out;
+  
 }
 
 @keyframes fadeIn {

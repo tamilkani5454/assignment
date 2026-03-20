@@ -1,0 +1,99 @@
+import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import './Login.css';
+
+const Login = () => {
+  const [hover, setHover] = useState(false)
+  const [logState, setLogState] = useState("login")
+  const [user, setUser] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    password: ""
+  })
+  return (
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
+          <h1>{logState == "login" ? "Welcome Back" : "Create ACcount"}</h1>
+          <p>Please enter your details to <span>{logState == "login" ? "sign in" : "sign up"}</span></p>
+        </div>
+        <div className="login-form">
+          {logState != "login" ? (
+            <>
+              <div className="form-group">
+                <label htmlFor="name">Name</label>
+                <input
+                  value={user.name}
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
+                  type="text"
+                  id="name"
+                  placeholder="Your Name"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="phone">Email Address</label>
+                <input
+                  value={user.phone}
+                  onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                  type="tel"
+                  id="phone"
+                  placeholder="9876543210"
+                  required
+                />
+              </div>
+            </>
+          ) : null}
+          <div className="form-group">
+            <label for="email">Email Address</label>
+            <input
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              type="email"
+              id="email"
+              placeholder="fakturera@gmail.com"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label for="password">Password</label>
+            <input
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              required
+            />
+            <p></p>
+          </div>
+          {logState == "login" ? (
+            <>
+              <div className="form-options">
+                <p>Forgot password?
+                  <a href="#" className="forgot-password"
+                    onMouseEnter={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}
+                    style={{ textDecorationLine: hover ? "underline" : "none" }}>Click Here</a></p>
+              </div>
+            </>
+          ) : null}
+          <button type="submit" className="login-button">{logState == "login" ? "Sign In" : "Sign Up"}</button>
+        </div>
+        <div className="login-footer">
+          <p>{logState == "login" ? "Don't have an account?" : "Already have Account?"} <a href="#" onClick={() => {
+            if (logState == "login") {
+              setLogState("signUp")
+            } else {
+              setLogState("login")
+            }
+          }}>{logState == "login" ? "Create one" : "Click Here"}</a></p>
+        </div>
+      </div>
+    </div >
+  );
+};
+
+export default Login;
