@@ -92,6 +92,34 @@
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
 }
 
+.password-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 48px; /* Space for the icon */
+}
+
+.eye-icon {
+  position: absolute;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.eye-icon:hover {
+  color: white;
+}
+
 .form-options {
   display: flex;
   justify-content: space-between;

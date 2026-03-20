@@ -1,16 +1,42 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [hover, setHover] = useState(false)
   const [logState, setLogState] = useState("login")
+  const [showPassword, setShowPassword] = useState(false)
   const [user, setUser] = useState({
     name: "",
     phone: "",
     email: "",
     password: ""
   })
+  const sendInfo = () => {
+    let Data;
+    if (logState == "login") {
+      if (!user.email || !user.password) {
+        toast.error("Fill all the Feilds")
+        return
+      }
+      Data = {
+        email: user.email,
+        password: user.password,
+      }
+      console.log(logState + " function activated")
+      return
+    }
+    if (logState == "signUp") {
+      if (!user.email || !user.password || !user.name || !user.phone) {
+        toast.error("Fill all the Feilds")
+        return
+      }
+      Data = user
+      console.log(logState + " function activated")
+      return
+    }
+  }
   return (
     <div className="login-container">
       <div className="login-card">
@@ -47,7 +73,7 @@ const Login = () => {
             </>
           ) : null}
           <div className="form-group">
-            <label for="email">Email Address</label>
+            <label htmlFor="email">Email Address</label>
             <input
               value={user.email}
               onChange={(e) => setUser({ ...user, email: e.target.value })}
@@ -58,16 +84,20 @@ const Login = () => {
             />
           </div>
           <div className="form-group">
-            <label for="password">Password</label>
-            <input
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-              type="password"
-              id="password"
-              placeholder="••••••••"
-              required
-            />
-            <p></p>
+            <label htmlFor="password">Password</label>
+            <div className="password-wrapper">
+              <input
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
+                type={showPassword ? "text" : "password"}
+                id="password"
+                placeholder="••••••••"
+                required
+              />
+              <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </div>
+            </div>
           </div>
           {logState == "login" ? (
             <>
@@ -80,7 +110,7 @@ const Login = () => {
               </div>
             </>
           ) : null}
-          <button type="submit" className="login-button">{logState == "login" ? "Sign In" : "Sign Up"}</button>
+          <button type="submit" className="login-button" onClick={sendInfo}>{logState == "login" ? "SignIn" : "SignUp"}</button>
         </div>
         <div className="login-footer">
           <p>{logState == "login" ? "Don't have an account?" : "Already have Account?"} <a href="#" onClick={() => {
