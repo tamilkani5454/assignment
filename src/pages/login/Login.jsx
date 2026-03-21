@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate()
+  const token = localStorage.getItem("token")
   const [hover, setHover] = useState(false)
   const [logState, setLogState] = useState("login")
   const [showPassword, setShowPassword] = useState(false)
@@ -20,6 +21,10 @@ const Login = () => {
     email: "demo@gmail.com",
     password: "Admin@123"
   })
+  if (token) {
+    navigate("/products")
+    toast.success("login succes")
+  }
   const sendInfo = () => {
     let Data;
     if (logState == "login") {
