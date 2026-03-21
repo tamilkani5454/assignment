@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 import toast from 'react-hot-toast';
@@ -21,10 +21,13 @@ const Login = () => {
     email: "demo@gmail.com",
     password: "Admin@123"
   })
-  if (token) {
-    navigate("/products")
-    toast.success("login succes")
-  }
+  useEffect(() => {
+    if (token) {
+      navigate("/products")
+      toast.success("login success")
+    }
+  }, [token])
+
   const sendInfo = () => {
     let Data;
     if (logState == "login") {
