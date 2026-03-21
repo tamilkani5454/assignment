@@ -2,16 +2,23 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
+  const navigate = useNavigate()
   const [hover, setHover] = useState(false)
   const [logState, setLogState] = useState("login")
   const [showPassword, setShowPassword] = useState(false)
+  const [fakeUser, setFakeUser] = useState({
+    email: "demo@gmail.com",
+    password: "Admin@123"
+  })
   const [user, setUser] = useState({
     name: "",
     phone: "",
-    email: "",
-    password: ""
+    email: "demo@gmail.com",
+    password: "Admin@123"
   })
   const sendInfo = () => {
     let Data;
@@ -24,7 +31,16 @@ const Login = () => {
         email: user.email,
         password: user.password,
       }
-      console.log(logState + " function activated")
+      if (Data.email != fakeUser.email) {
+        toast.error("enter correct email address :use demo login credntial")
+        return
+      }
+      if (Data.password != fakeUser.password) {
+        return toast.error("enter correct password :use demo login credntial")
+      }
+      localStorage.setItem("token", "KANI54545454")
+      navigate("/products")
+      toast.success("login success")
       return
     }
     if (logState == "signUp") {
@@ -110,7 +126,7 @@ const Login = () => {
               </div>
             </>
           ) : null}
-          <button type="submit" className="login-button" onClick={sendInfo}>{logState == "login" ? "SignIn" : "SignUp"}</button>
+          <button type="submit" className="login-button" onClick={sendInfo}>{logState == "login" ? "Login" : "SignUp"}</button>
         </div>
         <div className="login-footer">
           <p>{logState == "login" ? "Don't have an account?" : "Already have Account?"} <a href="#" onClick={() => {
