@@ -28,6 +28,14 @@
   @media (max-width: 1024px) {
     font-size: 16px;
   }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,6 +56,12 @@
   #social .button-icon {
     filter: invert(1) brightness(2);
   }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html, body {
@@ -75,8 +89,14 @@ h1 {
   letter-spacing: -1.68px;
   margin: 32px 0;
   @media (max-width: 1024px) {
-    font-size: 36px;
+    font-size: 42px;
+  }
+  @media (max-width: 768px) {
+    font-size: 32px;
     margin: 20px 0;
+  }
+  @media (max-width: 480px) {
+    font-size: 28px;
   }
 }
 h2 {
@@ -86,6 +106,9 @@ h2 {
   margin: 0 0 8px;
   @media (max-width: 1024px) {
     font-size: 20px;
+  }
+  @media (max-width: 768px) {
+    font-size: 18px;
   }
 }
 p {

@@ -60,7 +60,7 @@ const Login = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone">Email Address</label>
+                <label htmlFor="phone">Phone Number</label>
                 <input
                   value={user.phone}
                   onChange={(e) => setUser({ ...user, phone: e.target.value })}

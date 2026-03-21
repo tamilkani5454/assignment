@@ -1,4 +1,5 @@
 import Login from './pages/login/Login'
+import Products from './pages/products/Products'
 import { Route, Routes } from 'react-router-dom'
 import { Toaster } from "react-hot-toast";
 
@@ -7,6 +8,7 @@ function App() {
     <>
       <Routes>
         <Route path='/' element={<Login />} />
+        <Route path='/products' element={<Products />} />
       </Routes>
       <Toaster
         position="top-center"

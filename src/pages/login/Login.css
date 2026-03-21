@@ -6,10 +6,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('../../assets/sverige43.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../../assets/sverige43.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed; /* Keep background steady on mobile scroll */
   font-family: 'Outfit', sans-serif;
   padding: 20px;
 }
@@ -18,16 +19,15 @@
 .login-card {
   width: 100%;
   max-width: 420px;
-  background: rgba(255, 255, 255, 0.15);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 40px;
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
   color: white;
   animation: fadeIn 0.8s ease-out;
-  
 }
 
 @keyframes fadeIn {
@@ -73,22 +73,24 @@
 
 .form-group input {
   padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   color: white;
   font-size: 1rem;
   outline: none;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .form-group input:focus {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
 }
 
@@ -191,8 +193,37 @@
   text-decoration: underline;
 }
 
+@media (max-width: 768px) {
+  .login-card {
+    padding: 35px 30px;
+    max-width: 400px;
+  }
+}
+
 @media (max-width: 480px) {
+  .login-container {
+    padding: 15px;
+  }
+
   .login-card {
     padding: 30px 20px;
+    border-radius: 20px;
+  }
+
+  .login-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .login-header {
+    margin-bottom: 25px;
+  }
+
+  .form-group input {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  .login-button {
+    padding: 12px;
   }
 }
