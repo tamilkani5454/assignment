@@ -32,11 +32,11 @@ const Login = () => {
         password: user.password,
       }
       if (Data.email != fakeUser.email) {
-        toast.error("enter correct email address :use demo login credntial")
+        toast.error("enter correct email address :use demo login credential,if alredy change any demo credential please refresh the page ")
         return
       }
       if (Data.password != fakeUser.password) {
-        return toast.error("enter correct password :use demo login credntial")
+        return toast.error("enter correct password :use demo login credential, if alredy change any demo credential please refresh the page")
       }
       localStorage.setItem("token", "KANI54545454")
       navigate("/products")
