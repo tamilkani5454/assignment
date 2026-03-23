@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import useAdminCheck from '../../context/useAdminCheck';
+import { appContext } from '../../context/context';
 
 
 const Login = () => {
+  const { URL } = useContext(appContext)
   const navigate = useNavigate()
+  const { isAdmin, loading } = useAdminCheck()
   const token = localStorage.getItem("token")
   const [hover, setHover] = useState(false)
   const [logState, setLogState] = useState("login")
   const [showPassword, setShowPassword] = useState(false)
-  const [fakeUser, setFakeUser] = useState({
-    email: "demo@gmail.com",
-    password: "Admin@123"
-  })
   const [user, setUser] = useState({
     name: "",
     phone: "",
@@ -22,43 +22,25 @@ const Login = () => {
     password: "Admin@123"
   })
   useEffect(() => {
-    if (token) {
-      navigate("/products")
-      toast.success("login success")
+    if (loading) return;
+    if (isAdmin) {
+      navigate("/products");
     }
-  }, [token])
+  }, [isAdmin])
 
-  const sendInfo = () => {
-    let Data;
-    if (logState == "login") {
-      if (!user.email || !user.password) {
-        toast.error("Fill all the Feilds")
-        return
-      }
-      Data = {
-        email: user.email,
-        password: user.password,
-      }
-      if (Data.email != fakeUser.email) {
-        toast.error("enter correct email address :use demo login credential,if alredy change any demo credential please refresh the page ")
-        return
-      }
-      if (Data.password != fakeUser.password) {
-        return toast.error("enter correct password :use demo login credential, if alredy change any demo credential please refresh the page")
-      }
-      localStorage.setItem("token", "KANI54545454")
+  const send = async () => {
+   
+    const res = await fetch(URL+"/register/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user)
+    })
+    const data = await res.json()
+    console.log(data)
+    if (data.success) {
+      localStorage.setItem("token", data.token)
       navigate("/products")
-      toast.success("login success")
-      return
-    }
-    if (logState == "signUp") {
-      if (!user.email || !user.password || !user.name || !user.phone) {
-        toast.error("Fill all the Feilds")
-        return
-      }
-      Data = user
-      console.log(logState + " function activated")
-      return
+      toast.success(data.message)
     }
   }
   return (
@@ -134,7 +116,7 @@ const Login = () => {
               </div>
             </>
           ) : null}
-          <button type="submit" className="login-button" onClick={sendInfo}>{logState == "login" ? "Login" : "SignUp"}</button>
+          <button type="submit" className="login-button" onClick={send}>{logState == "login" ? "Login" : "SignUp"}</button>
         </div>
         <div className="login-footer">
           <p>{logState == "login" ? "Don't have an account?" : "Already have Account?"} <a href="#" onClick={() => {

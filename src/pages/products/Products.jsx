@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
-import { Edit2, Trash2, Plus, Save, X } from 'lucide-react';
+import { useState, useContext, useEffect } from 'react';
+import { Edit2, Trash2, Plus, Save, X, LogOut } from 'lucide-react';
+import { data, useNavigate } from 'react-router-dom';
 import './Products.css';
 import toast from 'react-hot-toast';
-import { dummyProducts } from '../../assets/dummy.js';
+import { appContext } from '../../context/context.jsx';
 
 const Products = () => {
+  const navigate = useNavigate();
+  const { URL } = useContext(appContext)
   const [loding, setLoding] = useState(false);
-  const [products, setProducts] = useState(dummyProducts);
+  const token = localStorage.getItem("token")
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+  const [products, setProducts] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -16,55 +24,127 @@ const Products = () => {
     price: '',
     stock: ''
   });
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
   const handleEdit = (product) => {
     setEditingId(product.id);
-    setEditForm({ ...product });
+    const filterproduct = (products.filter(item => item.id == product.id));
+    setEditForm(filterproduct[0])
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editForm.name || !editForm.price || !editForm.stock || !editForm.category) {
       toast.error("Please fill all fields before saving.");
       return;
     }
-    setProducts(products.map(p => p.id === editingId ? { ...editForm, price: Number(editForm.price), stock: Number(editForm.stock) } : p));
-    setEditingId(null);
-    setEditForm(null);
-    toast.success("Product updated successfully!");
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      setProducts(products.filter(p => p.id !== id));
-      toast.success("Product deleted.");
+    try {
+      setLoding(true)
+      const res = await fetch(URL + "/products/update-products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(editForm)
+      })
+      const data = await res.json()
+      if (data.success) {
+        getProducts()
+        setLoding(false)
+        toast.success(data.message);
+        setEditingId(null);
+        return
+      }
+      toast.error(data.message)
+    } finally {
+      setEditingId(null);
+      setLoding(false)
     }
+
   };
 
-  const handleAddSubmit = (e) => {
+  const handleDelete = async (id) => {
+    try {
+      setLoding(true)
+      const res = await fetch(URL + "/products/delete-products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id: id })
+      })
+      const data = await res.json()
+      if (data.success) {
+        getProducts()
+        setLoding(false)
+        toast.success(data.message);
+        setDeleteConfirmId(null);
+        return
+      }
+      toast.error(data.message)
+    } finally {
+      setLoding(false)
+      setDeleteConfirmId(null);
+    }
+
+  };
+
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
     if (!addForm.name || !addForm.price || !addForm.stock || !addForm.category) {
       toast.error("Please fill all fields to add a product.");
       return;
     }
-    const newProduct = {
-      id: Date.now(),
-      name: addForm.name,
-      category: addForm.category,
-      price: Number(addForm.price),
-      stock: Number(addForm.stock)
-    };
-    setProducts([...products, newProduct]);
-    setIsAdding(false);
-    setAddForm({ name: '', category: '', price: '', stock: '' });
-    toast.success("New product added!");
+    try {
+      setLoding(true)
+      const newProduct = {
+        name: addForm.name,
+        category: addForm.category,
+        price: Number(addForm.price),
+        stock: Number(addForm.stock)
+      };
+      const res = await fetch(URL + "/products/create-products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ newProduct })
+      })
+      const data = await res.json()
+      if (data.success) {
+        getProducts()
+        setLoding(false)
+        toast.success(data.message);
+        return
+      }
+      toast.error(data.message)
+    } finally {
+      setLoding(false)
+    }
+
   };
+
+
+
+  const getProducts = async () => {
+    const res = await fetch(URL + "/products/get-products", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    const data = await res.json()
+    setProducts(data)
+  }
+  useEffect(() => { getProducts() }, [token])
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  console.log(indexOfFirstItem)
-  console.log(indexOfLastItem)
+
   const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(products.length / itemsPerPage) || 1;
 
@@ -88,10 +168,16 @@ const Products = () => {
             <h1>Product Management</h1>
             <p>View and manage your store inventory</p>
           </div>
-          <button className="add-button" onClick={() => setIsAdding(!isAdding)}>
-            {isAdding ? <X size={20} /> : <Plus size={20} />}
-            {isAdding ? "Cancel" : "Add Product"}
-          </button>
+          <div className="header-actions">
+            <button className="add-button" onClick={() => setIsAdding(!isAdding)}>
+              {isAdding ? <X size={20} /> : <Plus size={20} />}
+              {isAdding ? "Cancel" : "Add Product"}
+            </button>
+            <button className="logout-button" onClick={handleLogout}>
+              <LogOut size={20} />
+              Logout
+            </button>
+          </div>
         </div>
 
         {isAdding && (
@@ -165,7 +251,7 @@ const Products = () => {
                       <>
                         <td className="product-name">{product.name}</td>
                         <td className="product-category"><span className="category-badge">{product.category}</span></td>
-                        <td className="product-price">₹{product.price.toFixed(2)}</td>
+                        <td className="product-price">₹{product.price}</td>
                         <td className="product-stock">
                           <span className={`stock-indicator ${product.stock < 50 ? 'low-stock' : 'in-stock'}`}>
                             {product.stock}
@@ -175,7 +261,7 @@ const Products = () => {
                           <button className="action-btn edit-btn" onClick={() => handleEdit(product)} title="Edit">
                             <Edit2 size={18} />
                           </button>
-                          <button className="action-btn delete-btn" onClick={() => handleDelete(product.id)} title="Delete">
+                          <button className="action-btn delete-btn" onClick={() => setDeleteConfirmId(product.id)} title="Delete">
                             <Trash2 size={18} />
                           </button>
                         </td>
@@ -199,6 +285,19 @@ const Products = () => {
             <button className="page-btn" onClick={nextPage} disabled={currentPage === totalPages}>
               Next
             </button>
+          </div>
+        )}
+
+        {deleteConfirmId && (
+          <div className="popup-overlay">
+            <div className="popup-card">
+              <h3>Delete Product</h3>
+              <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+              <div className="popup-actions">
+                <button className="popup-btn popup-cancel-btn" onClick={() => setDeleteConfirmId(null)}>Cancel</button>
+                <button className="popup-btn delete-confirm-btn" onClick={() => { handleDelete(deleteConfirmId) }}>Delete</button>
+              </div>
+            </div>
           </div>
         )}
       </div>

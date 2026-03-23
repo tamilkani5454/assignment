@@ -1,12 +1,15 @@
 import { Navigate, Outlet } from "react-router-dom";
+import useAdminCheck from "../context/useAdminCheck";
 
 const ProtectedLayout = () => {
-    const isAuth = localStorage.getItem("token");
-
-    if (!isAuth) {
+    const { isAdmin, loading } = useAdminCheck()
+    
+    if (loading) {
+        return <h2>Loading...</h2>; // or spinner
+    }
+    if (!isAdmin) {
         return <Navigate to="/" replace />;
     }
-
     return <Outlet />;
 };
 
